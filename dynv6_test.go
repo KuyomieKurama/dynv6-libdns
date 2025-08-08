@@ -157,10 +157,10 @@ func TestLibdnsAppendSetDeleteRecords(t *testing.T) {
 		recs := []libdns.Record{}
 		for i := 0; i < 3; i++ {
 			data := generateRandInt(t)
-			recs = append(recs, libdns.Record{
-				Name:  fmt.Sprintf("test%d", data),
-				Type:  "TXT",
-				Value: fmt.Sprint(data),
+			recs = append(recs, libdns.RR{
+				Name: fmt.Sprintf("test%d", data),
+				Type: "TXT",
+				Data: fmt.Sprint(data),
 			})
 		}
 		results, err := p.AppendRecords(ctx, zoneItem.Name, recs)
@@ -171,16 +171,20 @@ func TestLibdnsAppendSetDeleteRecords(t *testing.T) {
 		if len(results) != len(recs) {
 			t.Fatal("AppendRecords: number of records returned not equal to records sent")
 		}
+
 		for i := range recs {
-			data := generateRandInt(t)
-			recs[i].Value = fmt.Sprint(data)
+			if rr, ok := recs[i].(libdns.RR); ok {
+				rr.Data = fmt.Sprint(generateRandInt(t))
+				recs[i] = rr
+			}
 		}
+
 		for i := 0; i < 2; i++ {
 			data := generateRandInt(t)
-			recs = append(recs, libdns.Record{
-				Name:  fmt.Sprintf("test%d", data),
-				Type:  "TXT",
-				Value: fmt.Sprint(data),
+			recs = append(recs, libdns.RR{
+				Name: fmt.Sprintf("test%d", data),
+				Type: "TXT",
+				Data: fmt.Sprint(data),
 			})
 		}
 		results, err = p.SetRecords(ctx, zoneItem.Name, recs)
@@ -191,6 +195,7 @@ func TestLibdnsAppendSetDeleteRecords(t *testing.T) {
 		if len(results) != len(recs) {
 			t.Fatal("SetRecords: number of records returned not equal to records sent")
 		}
+
 		results, err = p.DeleteRecords(ctx, zoneItem.Name, recs)
 		if err != nil {
 			t.Fatal(err)
