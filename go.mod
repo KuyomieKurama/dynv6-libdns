@@ -1,4 +1,4 @@
-module github.com/libdns/dynv6
+module github.com/KuyomieKurama/dynv6-libdns
 
 go 1.15
 
