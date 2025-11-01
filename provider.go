@@ -24,7 +24,7 @@ type record struct {
 	TTL  time.Duration `json:"ttl,omitempty"`
 }
 
-// Hilfsfunktion: extrahiert .Data aus einem libdns.Record
+// Helpfunction: extracts .Data from the libdns.Record
 func getDataFromRecord(r libdns.Record) string {
 	if rr, ok := r.(libdns.RR); ok {
 		return rr.Data
@@ -32,7 +32,7 @@ func getDataFromRecord(r libdns.Record) string {
 	return ""
 }
 
-// Konvertiert einen internen dynv6-Record zu libdns.RR
+// Converts a intern dynv6-Record to libdns.RR
 func (r *record) toLibdnsRecord() libdns.Record {
 	return libdns.RR{
 		Name: r.Name,
@@ -42,7 +42,7 @@ func (r *record) toLibdnsRecord() libdns.Record {
 	}
 }
 
-// Erzeugt einen dynv6-Record aus einem libdns.Record
+// Creates a dynv6-Record from the libdns.Record
 func fromLibdnsRecord(zone string, r *libdns.Record) (*record, error) {
 	if rr, ok := (*r).(libdns.RR); ok {
 		return &record{
